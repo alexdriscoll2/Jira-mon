@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "vite-plugin-static-copy": "^4.1.1"
+  }
+}
