@@ -1,0 +1,106 @@
+.p-toolbar.app-toolbar {
+  padding: 0.5rem 0.5rem 0.5rem 0.5rem;
+  border: 0;
+  border-radius: 0;
+  background: #1868db;
+  color: #ffffff;
+  box-shadow: 0 2px 8px rgb(9 30 66 / 18%);
+}
+
+.app-toolbar__title {
+  margin: 0;
+  color: inherit;
+  font-size: 1.1rem;
+  font-weight: 700;
+  letter-spacing: 0;
+  line-height: 1.25;
+}
+
+.app-toolbar .logo-slot {
+  display: flex;
+  height: 24px;
+  width: 24px;
+  flex: 0 0 24px;
+  align-items: center;
+}
+
+.app-toolbar .logo-slot--before-title {
+  justify-content: flex-end;
+}
+
+.app-toolbar .logo-slot--after-title {
+  justify-content: flex-start;
+}
+
+.app-toolbar .logo-jira {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+}
+
+.app-toolbar .logo-pokeball {
+  width: 16px;
+  height: 16px;
+  object-fit: contain;
+  transform: translateX(4px);
+}
+
+.app-toolbar .p-toolbar-start{
+  gap: 0.1rem;
+}
+.app-toolbar .p-toolbar-center,
+.app-toolbar .p-toolbar-end {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.app-tabs .app-tablist {
+  --app-tabs-list-padding-block: 0rem;
+  --app-tabs-tab-padding-block: 0.5rem;
+  --app-tabs-padding-inline: 1rem;
+  box-sizing: border-box;
+  width: 100%;
+  padding-inline: var(--app-tabs-padding-inline);
+  justify-content: center;
+}
+
+.app-tabs {
+  --p-tabs-active-bar-background: #000000;
+  --p-tabs-tab-active-border-color: #000000;
+  --app-tabs-section-margin-inline: 0.75rem;
+  box-sizing: border-box;
+  display: flex;
+  flex: 1;
+  min-height: 0;
+  width: calc(100% - (2 * var(--app-tabs-section-margin-inline)));
+  margin-inline: var(--app-tabs-section-margin-inline);
+  margin-top: 0.75rem;
+  margin-bottom: 0;
+  flex-direction: column;
+} 
+
+.app-tabs .p-tablist-tab-list {
+  padding-block: var(--app-tabs-list-padding-block);
+  justify-content: center;
+}
+
+.app-tabs .p-tab {
+  padding-block: var(--app-tabs-tab-padding-block);
+}
+
+.app-tabs .p-tabpanels {
+  flex: 1;
+}
+
+.app-tabs .p-tab:hover,
+.app-tabs .p-tab:focus-visible,
+.app-tabs .p-tab.p-tab-active,
+.app-tabs .p-tab[aria-selected="true"] {
+  color: #000000;
+}
+
+.app-tabs .p-tab.p-tab-active,
+.app-tabs .p-tab[aria-selected="true"] {
+  border-bottom-color: #000000;
+}

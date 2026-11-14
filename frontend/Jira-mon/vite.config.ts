@@ -27,7 +27,7 @@ export default defineConfig({
   build: {
     rollupOptions: {
       input: {
-        content: 'src/main.js', // Build `main.js` as the content script
+        content: 'src/main.ts', // Build `main.js` for the extension popup
         background: 'src/background/background.js', // Add `background.js` as another entry point
       },
       output: {
@@ -41,6 +41,7 @@ export default defineConfig({
           }
           return '[name].js'; // Default naming for other files
         },
+        assetFileNames: 'assets/[name][extname]',
       },
       external: []
     },
