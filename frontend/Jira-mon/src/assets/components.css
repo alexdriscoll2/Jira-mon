@@ -45,6 +45,21 @@
   transform: translateX(4px);
 }
 
+.pokeball-grey {
+  display: block;
+  width: 48px;
+  max-width: 100%;
+  height: 48px;
+  filter: brightness(0) opacity(0.2);
+  object-fit: contain;
+}
+
+.pokeball-cell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .app-toolbar .p-toolbar-start{
   gap: 0.1rem;
 }
@@ -104,3 +119,10 @@
 .app-tabs .p-tab[aria-selected="true"] {
   border-bottom-color: #000000;
 }
+
+.grid-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr; /* Creates two equal-width columns */
+  gap: 20px; /* Adds space between the columns */
+}
+

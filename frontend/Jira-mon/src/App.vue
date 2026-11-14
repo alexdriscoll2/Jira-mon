@@ -30,7 +30,14 @@ import pokeball from '@/assets/pokeball_white.png'
     <TabPanels>
         <TabPanel value="tab1">
           <p class="text-surface-500 mt-1">Hello <b>Name</b></p>
+          <div class="grid-container">
+            <div>stats</div>
+            <div class="pokeball-cell">
+              <img :src="pokeball" alt="" class="pokeball-grey" />
+            </div>
+          </div>
         </TabPanel>
+
         <TabPanel value="tab2">
           <h2 class="text-lg font-bold">Collection</h2>
           <p class="text-surface-500 mt-1">This is your collection.</p>
