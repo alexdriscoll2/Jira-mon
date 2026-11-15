@@ -1,25 +1,10 @@
-function isJiraPage(url = '') {
-	return /^https:\/\/([^.]+\.)?atlassian\.net\/jira(?:\/|$)/.test(url)
-}
 
-function updateAction(tabId, url) {
-	if (typeof tabId !== 'number') return
+import { connectJira, sendCodeToBackend } from './auth.js'
+import { saveSession, getSession, clearSession } from './session.js'
+import { updateAction, updateOpenTabs } from './tabTracking.js'
 
-	if (isJiraPage(url)) {
-		chrome.action.setPopup({ tabId, popup: 'index.html' })
-		chrome.action.enable(tabId)
-	} else {
-		chrome.action.setPopup({ tabId, popup: '' })
-		chrome.action.disable(tabId)
-	}
-}
 
-function updateOpenTabs() {
-	chrome.action.disable()
-	chrome.tabs.query({}, (tabs) => {
-		tabs.forEach((tab) => updateAction(tab.id, tab.url))
-	})
-}
+// Tab tracking listeners
 
 chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
 	if (changeInfo.url || changeInfo.status === 'loading') {
@@ -28,8 +13,40 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
 })
 
 chrome.tabs.onActivated.addListener(({ tabId }) => {
-	chrome.tabs.get(tabId, (tab) => updateAction(tabId, tab.url))
+  chrome.tabs.get(tabId, (tab) => {
+    if (chrome.runtime.lastError || !tab) return
+    updateAction(tabId, tab.url)
+  })
 })
 
 chrome.runtime.onInstalled.addListener(updateOpenTabs)
 chrome.runtime.onStartup.addListener(updateOpenTabs)
+
+
+// Auth listeners
+
+chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
+  if (message.type === 'CONNECT_JIRA') {
+    connectJira()
+      .then(sendCodeToBackend)
+      .then(async (login) => {
+        await saveSession(login)
+        sendResponse({ ok: true, user: login.user })
+      })
+      .catch((err) => {
+        console.error('Jira connect failed:', err)
+        sendResponse({ ok: false, error: String(err) })
+      })
+    return true
+  }
+
+  if (message.type === 'GET_SESSION') {
+    getSession().then(({ user }) => sendResponse({ user: user ?? null }))
+    return true
+  }
+
+  if (message.type === 'LOGOUT') {
+    clearSession().then(() => sendResponse({ ok: true }))
+    return true
+  }
+})

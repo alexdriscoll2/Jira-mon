@@ -15,3 +15,14 @@ class User(SQLModel, table=True):
         default_factory=lambda: datetime.now(timezone.utc),
         sa_type=DateTime(timezone=True),
     )
+
+
+class UserCreate(SQLModel):
+    email: str
+
+
+class UserRead(SQLModel):
+    id: uuid.UUID
+    email: str
+    atlassian_account_id: str | None
+    created_at: datetime

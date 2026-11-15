@@ -3,7 +3,7 @@
    "version": "1.0",
    "manifest_version": 3,
    "action": {},
-   "permissions": [],
+   "permissions": ["identity", "storage"],
    "host_permissions": [
        "https://*.atlassian.net/jira/*"
    ],

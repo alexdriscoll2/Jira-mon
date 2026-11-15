@@ -5,22 +5,35 @@ import TabList from 'primevue/tablist';
 import Tab from 'primevue/tab';
 import TabPanels from 'primevue/tabpanels';
 import TabPanel from 'primevue/tabpanel';
+
 import jiraLogo from '@/assets/Jira_icon.svg'
 import pokeball from '@/assets/pokeball_white.png'
 
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 
-const status = ref('not tested')
+const user = ref<{ email: string } | null>(null)
 
-async function testBackend() {
+const status = ref('not connected')
+
+async function connect() {
+  status.value = 'waiting for Atlassian...'
   try {
-    const res = await fetch('http://localhost:8000/health')
-    const data = await res.json()
-    status.value = data.status
+    const res = await chrome.runtime.sendMessage({ type: 'CONNECT_JIRA' })
+    if (!res) {
+      status.value = 'no response from background script'
+    } else {
+      status.value = res.ok ? `connected as ${res.user.email}` : `failed: ${res.error}`
+      user.value = res.user
+    }
   } catch (err) {
-    status.value = 'failed: ' + err
+    status.value = 'error: ' + err
   }
 }
+
+onMounted(async () => {
+  const res = await chrome.runtime.sendMessage({ type: 'GET_SESSION' })
+  user.value = res?.user ?? null
+})
 
 </script>
 
@@ -48,15 +61,18 @@ async function testBackend() {
           <div class="grid-container">
             <div>
               <p class="text-surface-500 mt-1">stats</p>
-              <button @click="testBackend">Test backend</button>
-              <p>{{ status }}</p>
+
+              <div v-if="user === null">
+                <button @click="connect">Connect to Jira</button>
+              </div>
+              <div v-else>connected as {{ user.email }}!</div>
+              
             </div>
             <div class="pokeball-cell">
               <img :src="pokeball" alt="" class="pokeball-grey" />
             </div>
           </div>
         </TabPanel>
-
         <TabPanel value="tab2">
           <h2 class="text-lg font-bold">Collection</h2>
           <p class="text-surface-500 mt-1">This is your collection.</p>
