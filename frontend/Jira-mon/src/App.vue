@@ -7,6 +7,21 @@ import TabPanels from 'primevue/tabpanels';
 import TabPanel from 'primevue/tabpanel';
 import jiraLogo from '@/assets/Jira_icon.svg'
 import pokeball from '@/assets/pokeball_white.png'
+
+import { ref } from 'vue'
+
+const status = ref('not tested')
+
+async function testBackend() {
+  try {
+    const res = await fetch('http://localhost:8000/health')
+    const data = await res.json()
+    status.value = data.status
+  } catch (err) {
+    status.value = 'failed: ' + err
+  }
+}
+
 </script>
 
 <template>
@@ -31,7 +46,11 @@ import pokeball from '@/assets/pokeball_white.png'
         <TabPanel value="tab1">
           <p class="text-surface-500 mt-1">Hello <b>Name</b></p>
           <div class="grid-container">
-            <div>stats</div>
+            <div>
+              <p class="text-surface-500 mt-1">stats</p>
+              <button @click="testBackend">Test backend</button>
+              <p>{{ status }}</p>
+            </div>
             <div class="pokeball-cell">
               <img :src="pokeball" alt="" class="pokeball-grey" />
             </div>
