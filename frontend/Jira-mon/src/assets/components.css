@@ -74,6 +74,8 @@
   --app-tabs-list-padding-block: 0rem;
   --app-tabs-tab-padding-block: 0.5rem;
   --app-tabs-padding-inline: 1rem;
+  display: flex;
+  min-height: 2.5rem;
   box-sizing: border-box;
   width: 100%;
   padding-inline: var(--app-tabs-padding-inline);
@@ -96,6 +98,8 @@
 } 
 
 .app-tabs .p-tablist-tab-list {
+  display: flex;
+  min-height: 2.5rem;
   padding-block: var(--app-tabs-list-padding-block);
   justify-content: center;
 }

@@ -25,3 +25,12 @@ export async function apiFetch(path, options = {}) {
   }
   return res
 }
+
+export async function apiJson(path, options = {}) {
+  const res = await apiFetch(path, options)
+  if (!res.ok) {
+    const body = await res.json().catch(() => ({}))
+    throw new Error(body.detail || `Backend error ${res.status}`)
+  }
+  return res.status === 204 ? null : res.json()
+}

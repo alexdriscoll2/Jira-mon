@@ -1,6 +1,6 @@
 
 import { connectJira, sendCodeToBackend } from './auth.js'
-import { saveSession, getSession, clearSession } from './session.js'
+import { saveSession, getSession, clearSession, apiFetch, apiJson } from './session.js'
 import { updateAction, updateOpenTabs } from './tabTracking.js'
 
 
@@ -22,6 +22,13 @@ chrome.tabs.onActivated.addListener(({ tabId }) => {
 chrome.runtime.onInstalled.addListener(updateOpenTabs)
 chrome.runtime.onStartup.addListener(updateOpenTabs)
 
+
+
+const apiHandlers = {
+  SYNC_REWARDS: () => apiJson('/rewards/sync', { method: 'POST' }),
+  OPEN_BOX: (m) => apiJson(`/rewards/${m.rewardId}/open`, { method: 'POST' }),
+  GET_COLLECTION: () => apiJson('/rewards/collection'),
+}
 
 // Auth listeners
 
@@ -47,6 +54,14 @@ chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
 
   if (message.type === 'LOGOUT') {
     clearSession().then(() => sendResponse({ ok: true }))
+    return true
+  }
+
+  const handler = apiHandlers[message.type]
+  if (handler) {
+    handler(message)
+      .then((data) => sendResponse({ ok: true, data }))
+      .catch((err) => sendResponse({ ok: false, error: err.message }))
     return true
   }
 })
