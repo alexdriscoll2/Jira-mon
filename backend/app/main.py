@@ -9,11 +9,13 @@ from app.database import get_session
 from app.config import settings
 from app.models import User, UserCreate, UserRead
 from app.routers import auth
+from app.routers import jira as jira_router
 
 
 app = FastAPI(title="Jiramon API")
 
 app.include_router(auth.router)
+app.include_router(jira_router.router)
 
 app.add_middleware(
     CORSMiddleware,

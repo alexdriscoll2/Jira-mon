@@ -26,3 +26,20 @@ class UserRead(SQLModel):
     email: str
     atlassian_account_id: str | None
     created_at: datetime
+
+
+class JiraConnection(SQLModel, table=True):
+    __tablename__ = "jira_connections"
+
+    id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
+    user_id: uuid.UUID = Field(foreign_key="users.id", unique=True, index=True)
+    cloud_id: str
+    site_url: str
+    access_token_enc: str
+    refresh_token_enc: str | None = None
+    expires_at: datetime = Field(sa_type=DateTime(timezone=True))
+    scope: str = ""
+    updated_at: datetime = Field(
+        default_factory=lambda: datetime.now(timezone.utc),
+        sa_type=DateTime(timezone=True),
+    )

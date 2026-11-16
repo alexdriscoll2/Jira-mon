@@ -6,6 +6,7 @@ from app import jira
 from app.database import get_session
 from app.models import User, UserRead
 from app.security import create_session_token, get_current_user
+from app.jira_tokens import save_connection
 
 router = APIRouter(prefix="/auth", tags=["auth"])
 
@@ -26,7 +27,9 @@ def jira_callback(data: JiraCallback, session: Session = Depends(get_session)):
     sites = jira.get("/oauth/token/accessible-resources", access_token)
     if not sites:
         raise HTTPException(status_code=400, detail="No Jira site was authorized")
-    cloud_id = sites[0]["id"]
+    site = sites[0]
+    cloud_id = site["id"]
+    site_url = site["url"]
 
     me = jira.get(f"/ex/jira/{cloud_id}/rest/api/3/myself", access_token)
     account_id = me["accountId"]
@@ -51,6 +54,7 @@ def jira_callback(data: JiraCallback, session: Session = Depends(get_session)):
     session.add(user)
     session.commit()
     session.refresh(user)
+    save_connection(session, user, tokens, cloud_id, site_url)
     return {"user": user, "session_token": create_session_token(user.id)}
 
 @router.get("/me", response_model=UserRead)

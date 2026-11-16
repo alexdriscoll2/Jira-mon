@@ -9,5 +9,6 @@ class Settings(BaseSettings):
     jira_client_secret: str = ""
     session_secret: str = ""
     session_expire_minutes: int = 60 * 24 * 7  # 7 days
+    encryption_key: str = ""
 
 settings = Settings()
