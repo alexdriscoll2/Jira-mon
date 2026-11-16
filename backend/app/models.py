@@ -2,7 +2,7 @@ import uuid
 from datetime import datetime, timezone
 
 from sqlalchemy import DateTime
-from sqlmodel import Field, SQLModel
+from sqlmodel import Field, SQLModel, UniqueConstraint
 
 
 class User(SQLModel, table=True):
@@ -43,3 +43,44 @@ class JiraConnection(SQLModel, table=True):
         default_factory=lambda: datetime.now(timezone.utc),
         sa_type=DateTime(timezone=True),
     )
+
+class TicketReward(SQLModel, table=True):
+    __tablename__ = "ticket_rewards"
+    __table_args__ = (
+        UniqueConstraint("user_id", "jira_issue_id", name="uq_reward_user_issue"),
+    )
+
+    id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
+    user_id: uuid.UUID = Field(foreign_key="users.id", index=True)
+    jira_issue_id: str
+    issue_key: str
+    summary: str = ""
+    completed_at: datetime = Field(sa_type=DateTime(timezone=True))
+    opened_at: datetime | None = Field(default=None, sa_type=DateTime(timezone=True))
+    pokemon_id: int | None = None
+    created_at: datetime = Field(
+        default_factory=lambda: datetime.now(timezone.utc),
+        sa_type=DateTime(timezone=True),
+    )
+
+
+class RewardRead(SQLModel):
+    id: uuid.UUID
+    issue_key: str
+    summary: str
+    completed_at: datetime
+    opened_at: datetime | None
+    pokemon_id: int | None
+
+class PokemonRead(SQLModel):
+    id: int
+    name: str | None
+    sprite_url: str
+
+
+class CollectionItem(SQLModel):
+    reward_id: uuid.UUID
+    issue_key: str
+    summary: str
+    opened_at: datetime
+    pokemon: PokemonRead

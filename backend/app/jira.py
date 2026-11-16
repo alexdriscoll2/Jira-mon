@@ -58,3 +58,16 @@ def refresh_access_token(refresh_token: str) -> dict:
             status_code=409, detail="Jira connection expired, please reconnect"
         )
     return resp.json()
+
+def post(path: str, access_token: str, body: dict):
+    resp = httpx.post(
+        f"{API_BASE}{path}",
+        headers={"Authorization": f"Bearer {access_token}"},
+        json=body,
+        timeout=15,
+    )
+    if resp.status_code != 200:
+        print("Atlassian API error:", path, resp.status_code, resp.text)  # dev only
+        raise HTTPException(status_code=502, detail="Could not reach Jira")
+    return resp.json()
+
